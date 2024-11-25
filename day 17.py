@@ -62,7 +62,6 @@ firstCrucible()
 
 
 def prune(crucList):
-    count = 0
     finish = []
     while len(crucList) > 0:
         curMatch =[crucList[0].heat]
@@ -77,8 +76,6 @@ def prune(crucList):
             if curMatch[x] == minheat:
                 finish.append(crucList[matchPos[x]])
                 break
-            else:
-                count += 1
         for x in range(len(matchPos) - 1, -1, -1):
             crucList.remove(crucList[x])
     return finish
@@ -120,11 +117,11 @@ while len(allCrucibles) > 0:
             print('finished', instance.heat)
     if len(allCrucibles) > 0:
         allCrucibles = prune(allCrucibles)
-    print('all crucibles:',len(allCrucibles))
+    #print('all crucibles:',len(allCrucibles))
 
 
 
 # test print
 #for x in newCrucs:
     #print(x.xpos, x.ypos, '/ heat:', x.heat, '/ dir:', x.dire, '/ streak:', x.streak)
-print(minHeat)
+print('end',minHeat)
