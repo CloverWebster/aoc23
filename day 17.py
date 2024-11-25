@@ -6,6 +6,7 @@ class Crucibles:
         Crucible.dire = dire
         Crucible.streak = streak
 
+
 def move(crucible):
 
 #move right
