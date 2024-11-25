@@ -64,20 +64,25 @@ firstCrucible()
 def prune(crucList):
     finish = []
     while len(crucList) > 0:
-        curMatch =[crucList[0].heat]
-        matchPos = [0]
+        cellHeats =[crucList[0].heat]
+        posCrucList = [0]
         for x in range(1,len(crucList)):
             if crucList[0].xpos == crucList[x].xpos and crucList[0].ypos == crucList[x].ypos:
                 if crucList[0].dire == crucList[x].dire and crucList[0].streak == crucList[x].streak:
-                    curMatch.append(crucList[x].heat)
-                    matchPos.append(x)
-        minheat = min(curMatch)
-        for x in range(0, len(curMatch)):
-            if curMatch[x] == minheat:
-                finish.append(crucList[matchPos[x]])
+                    cellHeats.append(crucList[x].heat)
+                    posCrucList.append(x)
+        minheat = min(cellHeats)
+        for x in range(0, len(cellHeats)):
+            if cellHeats[x] == minheat:
+                finish.append(crucList[posCrucList[x]])
+                y= crucList[posCrucList[x]]
+                #print('save', y.xpos, y.ypos, '/ heat:', y.heat, '/ dir:', y.dire, '/ streak:', y.streak)
                 break
-        for x in range(len(matchPos) - 1, -1, -1):
-            crucList.remove(crucList[x])
+        for x in range(len(posCrucList) - 1, -1, -1):
+            y= crucList[posCrucList[x]]
+            #print('remove', y.xpos, y.ypos, '/ heat:', y.heat, '/ dir:', y.dire, '/ streak:', y.streak)
+            crucList.remove(crucList[posCrucList[x]])
+        #print('\n')
     return finish
 
 
@@ -94,7 +99,7 @@ for x in data:
        #[4,5,6],
        #[7,8,9]]
 
-minHeat = 200
+minHeat = 10000000000000000000
 
 counter = 0
 while len(allCrucibles) > 0:
