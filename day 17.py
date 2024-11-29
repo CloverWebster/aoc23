@@ -87,6 +87,25 @@ def prune(crucList):
 
 
 
+def shorten(crucibles):
+    minscore = 1000000000000000
+    maxscore = 0
+    for x in range(0,len(crucibles)):
+        toGO = ((len(grid[0]) - crucibles[x].xpos) + (len(grid) - crucibles[x].ypos)) * 4
+        if crucibles[x].heat + toGO < minscore:
+            minscore = crucibles[x].heat + toGO
+        if crucibles[x].heat + toGO > maxscore:
+            maxscore = crucibles[x].heat + toGO
+    midscore = (minscore + maxscore)//2
+    finish = []
+    for x in range(0,len(crucibles)):
+        toGO = ((len(grid[0]) - crucibles[x].xpos) + (len(grid) - crucibles[x].ypos)) * 4
+        if crucibles[x].heat + toGO < midscore:
+            finish.append(crucibles[x])
+    return finish
+
+
+
 with open('17.txt') as j:
     data = [i for i in j.read().strip().split("\n")]
 grid = []
@@ -99,7 +118,7 @@ for x in data:
        #[4,5,6],
        #[7,8,9]]
 
-minHeat = 10000000000000000000
+minHeat = 674
 
 counter = 0
 while len(allCrucibles) > 0:
@@ -122,6 +141,9 @@ while len(allCrucibles) > 0:
             print('finished', instance.heat)
     if len(allCrucibles) > 0:
         allCrucibles = prune(allCrucibles)
+    if len(allCrucibles) > 7500:
+        allCrucibles = shorten(allCrucibles)
+        print('shortened', len(allCrucibles))
     #print('all crucibles:',len(allCrucibles))
 
 
