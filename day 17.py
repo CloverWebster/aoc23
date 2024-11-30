@@ -64,32 +64,46 @@ firstCrucible()
 def prune(crucList):
     finish = []
     while len(crucList) > 0:
+        y = crucList[0]
         cellHeats =[crucList[0].heat]
-        posCrucList = [0]
-        for x in range(1,len(crucList)):
+        x = 1
+        while x < len(crucList):
             if crucList[0].xpos == crucList[x].xpos and crucList[0].ypos == crucList[x].ypos:
                 if crucList[0].dire == crucList[x].dire and crucList[0].streak == crucList[x].streak:
                     cellHeats.append(crucList[x].heat)
-                    posCrucList.append(x)
+                    crucList.remove(crucList[x])
+                else: 
+                    x += 1
+            else:
+                x += 1
         minheat = min(cellHeats)
-        for x in range(0, len(cellHeats)):
-            if cellHeats[x] == minheat:
-                finish.append(crucList[posCrucList[x]])
-                y= crucList[posCrucList[x]]
-                #print('save', y.xpos, y.ypos, '/ heat:', y.heat, '/ dir:', y.dire, '/ streak:', y.streak)
-                break
-        for x in range(len(posCrucList) - 1, -1, -1):
-            y= crucList[posCrucList[x]]
-            #print('remove', y.xpos, y.ypos, '/ heat:', y.heat, '/ dir:', y.dire, '/ streak:', y.streak)
-            crucList.remove(crucList[posCrucList[x]])
-        #print('\n')
-    return finish
+        finish.append(Crucibles(y.xpos,y.ypos,minheat,y.dire,y.streak))
+        crucList.remove(y)
+
+    fullCrucs = []
+    global minGrid
+    for x in range(0,len(finish)):
+        crucible = finish[x]
+        if crucible.dire == 'R':
+            direction = 0
+        elif crucible.dire == 'L':
+            direction = 1
+        elif crucible.dire == 'U':
+            direction = 2
+        elif crucible.dire == 'D':
+            direction = 3
+
+        if crucible.heat <= minGrid[crucible.ypos][crucible.xpos][direction][crucible.streak -1]:
+            fullCrucs.append(crucible)
+            minGrid[crucible.ypos][crucible.xpos][direction][crucible.streak-1] = crucible.heat
+    return fullCrucs
 
 
 
 def shorten(crucibles):
+    
     minscore = 1000000000000000
-    maxscore = 0
+    maxscore = 0    
     for x in range(0,len(crucibles)):
         toGO = ((len(grid[0]) - crucibles[x].xpos) + (len(grid) - crucibles[x].ypos)) * 4
         if crucibles[x].heat + toGO < minscore:
@@ -114,11 +128,15 @@ for x in data:
     for y in range(0,len(x)):
         curData.append(int(x[y]))
     grid.append(curData)
-#grid= [[1,2,3],
-       #[4,5,6],
-       #[7,8,9]]
 
-minHeat = 674
+minGrid = []
+for x in range(0,len(grid)):
+    current = []
+    for y in range(0,len(grid[0])):
+        current.append([[672,672,672],[672,672,672],[672,672,672],[672,672,672]])
+    minGrid.append(current)
+
+minHeat = 672
 
 counter = 0
 while len(allCrucibles) > 0:
@@ -129,7 +147,6 @@ while len(allCrucibles) > 0:
         move(instance)
     allCrucibles = []
     for instance in newCrucs:
-        #print(instance.xpos, instance.ypos, '/ heat:', instance.heat, '/ dir:', instance.dire, '/ streak:', instance.streak)
         if finished(instance) == False:
             if instance.heat <= minHeat:
                 if instance.xpos != 0 or instance.ypos != 0:
@@ -141,14 +158,9 @@ while len(allCrucibles) > 0:
             print('finished', instance.heat)
     if len(allCrucibles) > 0:
         allCrucibles = prune(allCrucibles)
-    if len(allCrucibles) > 7500:
+    if len(allCrucibles) > 5000:
         allCrucibles = shorten(allCrucibles)
-        print('shortened', len(allCrucibles))
-    #print('all crucibles:',len(allCrucibles))
+        print('shortened')
 
-
-
-# test print
-#for x in newCrucs:
-    #print(x.xpos, x.ypos, '/ heat:', x.heat, '/ dir:', x.dire, '/ streak:', x.streak)
 print('end',minHeat)
+
